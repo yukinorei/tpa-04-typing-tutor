@@ -19,14 +19,19 @@ class TypingTutorGame {
     this.isRoundInProgress = true;
     this.currentStrokeCount = -1;
     this.initTargetText();
-    this.correctChar = 0;
-    this.wrongChar = 0;
+    this.correctCharCount = 0;
+    this.wrongCharCount = 0;
     this.targetText = null;
+    this.hasGameEnded();
   }
 
-  displayScore(correctChar, targetTotalCountChar) {
-    const accuracyRate = Math.round(correctChar / targetTotalCountChar * 100);
+  displayScore(correctChar, targetTotalCountCharCount) {
+    const accuracyRate = Math.round((correctChar / targetTotalCountCharCount) * 100);
     console.log(`${accuracyRate}%正解`);
+  }
+
+  hasGameEnded(targetTotalCountCharCount) {
+    return targetTotalCountCharCount === this.correctCharCount + this.wrongCharCount;
   }
 
   handleKeyStroke(key) {
@@ -34,15 +39,15 @@ class TypingTutorGame {
     this.currentStrokeCount += 1;
     const targetChar = this.targetText[this.currentStrokeCount];
     if (key === targetChar) {
-      this.correctChar += 1;
+      this.correctCharCount += 1;
     } else {
-      this.wrongChar += 1;
+      this.wrongCharCount += 1;
     }
     this.view.renderKeystroke(key, targetChar);
-    const targetTotalCountChar = this.targetText.length;
-    if (targetTotalCountChar === this.correctChar + this.wrongChar) {
+    const targetTotalCountCharCount = this.targetText.length;
+    if (this.hasGameEnded(targetTotalCountCharCount)) {
       this.isRoundInProgress = false;
-      this.displayScore(this.correctChar, targetTotalCountChar);
+      this.displayScore(this.correctCharCount, targetTotalCountCharCount);
     }
   }
 
